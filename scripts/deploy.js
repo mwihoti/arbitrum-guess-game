@@ -2,12 +2,19 @@ const hre = require("hardhat");
 
 async function main() {
     const [deployer] = await hre.ethers.getSigners();
+    console.log("Deploying contracts with the account:", deployer.address);
+
     const GuessGame = await hre.ethers.getContractFactory("GuessGame");
+    
+    // Deploy without parameters first to debug
     const guessGame = await GuessGame.deploy(deployer.address);
 
-    await guessGame.deployed();
+    // Wait for the deployment to complete
+    await guessGame.waitForDeployment();
 
-    console.log("GuessGame deployed to:", guessGame.address);
+    const gameAddress = await guessGame.getAddress();
+    console.log("GuessGame deployed to:", gameAddress);
+    console.log("Contract owner:", deployer.address);
 }
 
 main()
