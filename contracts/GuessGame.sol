@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract GuessGame is Ownable {
     uint256 private number = 5;
-    uint256 public betAmount = 0.00001 ether;
-    uint256 public prize = 0.0005 ether;
+    uint256 public betAmount = 0.00000001 ether;
+    uint256 public prize = 0.0000005 ether;
 
 
     event NumberGuessed(address player, uint256 guessedNumber, bool won);

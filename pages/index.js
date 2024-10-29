@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
 import { arbitrumSepolia } from 'wagmi/chains'
-import { formatEther, parseEther } from 'viem'
+import { formatEther } from 'viem'
 import GuessGameABI from '../artifacts/contracts/GuessGame.sol/GuessGame.json'
 
 export default function Home() {
@@ -52,8 +52,8 @@ export default function Home() {
           })
         ])
 
-        setBetAmount(requiredBet.toString())
-        setPrize(prizeAmount.toString())
+        setBetAmount(requiredBet)
+        setPrize(prizeAmount)
         
         // Get contract balance
         await updateContractBalance()
@@ -83,22 +83,13 @@ export default function Home() {
       return
     }
 
-    if (!guess || guess < 1 || guess > 10) {
+    if (!guess || parseInt(guess) < 1 || parseInt(guess) > 10) {
       setMessage('Please enter a number between 1 and 10')
       return
     }
 
-    if (!walletClient || !contractAddress) {
-      setMessage('Wallet not connected properly')
-      return
-    }
-
-    // Check if contract has enough balance to pay prize
-    const balanceBN = BigInt(contractBalance || '0')
-    const prizeBN = BigInt(prize || '0')
-    
-    if (balanceBN < prizeBN) {
-      setMessage('Contract does not have enough balance to pay prizes. Please try again later.')
+    if (!walletClient || !contractAddress || !betAmount) {
+      setMessage('Wallet not connected properly or contract values not loaded')
       return
     }
 
@@ -108,8 +99,8 @@ export default function Home() {
         address: contractAddress,
         abi: GuessGameABI.abi,
         functionName: 'guess',
-        args: [Number(guess)],
-        value: BigInt(betAmount),
+        args: [BigInt(guess)],
+        value: betAmount,
         account: address,
       })
 
@@ -128,30 +119,36 @@ export default function Home() {
         toBlock: receipt.blockNumber
       })
 
-      const event = logs[0]
-      if (event) {
-        const [player, guessedNumber, won] = event.args
+      if (logs && logs.length > 0) {
+        const event = logs[0]
+        const { player, guessedNumber, won } = event.args
         
         if (won) {
-          setMessage(`🎉 Congratulations! You guessed correctly and won ${formatEther(prize)} ETH!`)
+          setMessage(`🎉 Congratulations! You guessed correctly and won ${prize ? formatEther(prize) : '0'} ETH!`)
         } else {
           setMessage('😔 Sorry, your guess was incorrect. Try again!')
         }
 
         // Update contract balance after guess
         await updateContractBalance()
+      } else {
+        setMessage('No event found. Please check the transaction on the block explorer.')
       }
     } catch (error) {
       console.error('Error making guess:', error)
       
-      if (error.message.includes('user rejected')) {
-        setMessage('Transaction cancelled')
-      } else if (error.message.includes('insufficient funds')) {
-        setMessage('Error: Insufficient funds in your wallet')
-      } else if (error.message.includes('Incorrect bet amount')) {
-        setMessage(`Please send exactly ${formatEther(betAmount)} ETH as bet amount`)
+      if (error instanceof Error) {
+        if (error.message.includes('user rejected')) {
+          setMessage('Transaction cancelled')
+        } else if (error.message.includes('insufficient funds')) {
+          setMessage('Error: Insufficient funds in your wallet')
+        } else if (error.message.includes('Incorrect bet amount')) {
+          setMessage(`Please send exactly ${betAmount ? formatEther(betAmount) : '0'} ETH as bet amount`)
+        } else {
+          setMessage('Error making guess. Please try again.')
+        }
       } else {
-        setMessage('Error making guess. Please try again.')
+        setMessage('An unknown error occurred. Please try again.')
       }
     } finally {
       setIsLoading(false)
@@ -197,10 +194,10 @@ export default function Home() {
               </div>
               <button
                 type="submit"
-                
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white `}
+                disabled={isLoading}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                 submit Guess
+                {isLoading ? 'Submitting...' : 'Submit Guess'}
               </button>
             </form>
           </>

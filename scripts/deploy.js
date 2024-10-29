@@ -13,7 +13,7 @@ async function main() {
     await guessGame.waitForDeployment();
 
     const gameAddress = await guessGame.getAddress();
-    console.log("GuessGame deployed to:", gameAddress);
+    console.log("GuessGame deployed to:", await guessGame.getAddress());
     console.log("Contract owner:", deployer.address);
 }
 
