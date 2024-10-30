@@ -101,7 +101,7 @@ export default function Game() {
       })
 
       const hash = await walletClient.writeContract(request)
-      setMessage('Transaction sent! Waiting for confirmation...')
+      setMessage('Transaction sent! ...')
       
       const receipt = await publicClient.waitForTransactionReceipt({ hash })
       
