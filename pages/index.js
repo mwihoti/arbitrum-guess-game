@@ -9,23 +9,27 @@ export default function Home() {
   const [guess, setGuess] = useState('')
   const [message, setMessage] = useState('')
   const [betAmount, setBetAmount] = useState(null)
-  const [prize, setPrize] = useState(null)
+ 
   const [isLoading, setIsLoading] = useState(false)
   const [contractBalance, setContractBalance] = useState('0')
-  
+  const [playerPoints, setPlayerPoints] = useState(null)
   const { address, isConnected, chainId } = useAccount()
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
+
   
   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
 
-  const updateContractBalance = async () => {
-    if (!contractAddress) return
+  const updatePlayerPoints = async () => {
+    if (!contractAddress || !address) return
     try {
-      const balance = await publicClient.getBalance({
-        address: contractAddress
+      const points = await publicClient.readContract({
+        address: contractAddress,
+        abi: GuessGameABI.abi,
+        functionName: 'getPoints',
+        args: [address]
       })
-      setContractBalance(balance.toString())
+      setPlayerPoints(points.toString())
     } catch (error) {
       console.error('Error getting contract balance:', error)
     }
@@ -38,25 +42,17 @@ export default function Home() {
       }
 
       try {
-        // Get contract values
-        const [requiredBet, prizeAmount] = await Promise.all([
-          publicClient.readContract({
+        // Get the required bet amount from the contract
+        const requiredBet = await publicClient.readContract({
             address: contractAddress,
             abi: GuessGameABI.abi,
             functionName: 'betAmount'
-          }),
-          publicClient.readContract({
-            address: contractAddress,
-            abi: GuessGameABI.abi,
-            functionName: 'prize'
           })
-        ])
-
-        setBetAmount(requiredBet)
-        setPrize(prizeAmount)
+          setBetAmount(requiredBet)
+         
         
-        // Get contract balance
-        await updateContractBalance()
+        // update players points
+        await updatePlayerPoints()
       } catch (error) {
         console.error('Error getting contract values:', error)
         setMessage('Error loading contract values. Please try again.')
@@ -65,10 +61,8 @@ export default function Home() {
 
     initContract()
     
-    // Set up interval to update contract balance
-    const intervalId = setInterval(updateContractBalance, 10000)
-    return () => clearInterval(intervalId)
-  }, [isConnected, chainId, publicClient, contractAddress])
+ 
+  }, [isConnected, chainId, publicClient, contractAddress, address])
 
   const handleGuess = async (e) => {
     e.preventDefault()
@@ -124,13 +118,13 @@ export default function Home() {
         const { player, guessedNumber, won } = event.args
         
         if (won) {
-          setMessage(`🎉 Congratulations! You guessed correctly and won ${prize ? formatEther(prize) : '0'} ETH!`)
+          setMessage(`🎉 Congratulations! You guessed correctly and won 15 points`)
         } else {
           setMessage('😔 Sorry, your guess was incorrect. Try again!')
         }
 
         // Update contract balance after guess
-        await updateContractBalance()
+        await updatePlayerPoints()
       } else {
         setMessage('No event found. Please check the transaction on the block explorer.')
       }
@@ -170,11 +164,9 @@ export default function Home() {
                 Bet amount: {betAmount ? formatEther(betAmount) : '0'} ETH
               </div>
               <div className="text-green-600 font-medium">
-                Prize pool: {prize ? formatEther(prize) : '0'} ETH
+                your Points: {playerPoints !== null ? playerPoints : '0'}
               </div>
-              <div className="text-blue-600">
-                Contract balance: {contractBalance ? formatEther(contractBalance) : '0'} ETH
-              </div>
+              
             </div>
             <form onSubmit={handleGuess} className="space-y-4">
               <div>

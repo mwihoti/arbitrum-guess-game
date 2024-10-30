@@ -10,6 +10,7 @@ import {
   sepolia, 
   arbitrumSepolia 
 } from 'wagmi/chains'
+import '../styles/globals.css'
 
 const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID
 
