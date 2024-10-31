@@ -1,1 +1,45 @@
-self.__BUILD_MANIFEST={polyfillFiles:["static/chunks/polyfills-42372ed130431b0a.js"],devFiles:[],ampDevFiles:[],lowPriorityFiles:[],rootMainFiles:[],rootMainFilesTree:{},pages:{"/":["static/chunks/webpack-08b1976963c2dad2.js","static/chunks/framework-dd253615bf3bcf2d.js","static/chunks/main-a0487dc664de8f03.js","static/chunks/pages/index-2cd193fc116e8bf7.js"],"/_app":["static/chunks/webpack-08b1976963c2dad2.js","static/chunks/framework-dd253615bf3bcf2d.js","static/chunks/main-a0487dc664de8f03.js","static/css/c591e5be5d1b7c49.css","static/chunks/pages/_app-4975114508553160.js"],"/_error":["static/chunks/webpack-08b1976963c2dad2.js","static/chunks/framework-dd253615bf3bcf2d.js","static/chunks/main-a0487dc664de8f03.js","static/chunks/pages/_error-994d732e4420fa33.js"],"/game":["static/chunks/webpack-08b1976963c2dad2.js","static/chunks/framework-dd253615bf3bcf2d.js","static/chunks/main-a0487dc664de8f03.js","static/chunks/3971-58ba02e9604ac378.js","static/chunks/pages/game-e6e6c3c9d8f5fab3.js"],"/home":["static/chunks/webpack-08b1976963c2dad2.js","static/chunks/framework-dd253615bf3bcf2d.js","static/chunks/main-a0487dc664de8f03.js","static/chunks/pages/home-0c47a5facaf48e85.js"]},ampFirstPages:[]},self.__BUILD_MANIFEST.lowPriorityFiles=["/static/"+process.env.__NEXT_BUILD_ID+"/_buildManifest.js",,"/static/"+process.env.__NEXT_BUILD_ID+"/_ssgManifest.js"];
+self.__BUILD_MANIFEST = {
+  "polyfillFiles": [
+    "static/chunks/polyfills.js"
+  ],
+  "devFiles": [
+    "static/chunks/react-refresh.js"
+  ],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [],
+  "rootMainFilesTree": {},
+  "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
+    "/_app": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/_app.js"
+    ],
+    "/_error": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/_error.js"
+    ],
+    "/game": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/game.js"
+    ],
+    "/home": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/home.js"
+    ]
+  },
+  "ampFirstPages": []
+};
+self.__BUILD_MANIFEST.lowPriorityFiles = [
+"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
+,"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js",
+
+];
