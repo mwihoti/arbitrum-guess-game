@@ -87,7 +87,14 @@ contract GuessGame is Ownable {
         generateNumber();
     }
 
-    //Add function to get the current block infrmation 
+    //Add function to get the current block information 
+    function getBlockInfo() external view returns (uint256 timestamp, uint256 blockNumber, bytes32 prevHash) {
+       return (
+        block.timestamp,
+        block.number,
+        blockhash(block.number - 1)
+       );
+    }
 
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
