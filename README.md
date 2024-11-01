@@ -5,6 +5,8 @@ Guess the Number - Arbitrum Sepolia dApp Adventure
 
 Guess the Number is a decentralized application (dApp) that allows users to play a number guessing game on the Arbitrum Sepolia network. Players connect their wallets, place small bets using testnet ETH, and guess a number between 1 and 10. Correct guesses earn points, creating an engaging and educational blockchain gaming experience.
 
+
+<img src="./public/guess-game.png" alt="guess-game-image">
 ## Application url  
 Live application: https://arbitrum-guess-game.vercel.app/
 
