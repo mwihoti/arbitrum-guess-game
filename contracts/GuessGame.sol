@@ -2,24 +2,25 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract GuessGame is Ownable {
     using Strings for uint256;
+
     uint256 private number;
     uint256 public betAmount = 0.00000001 ether;
     //uint256 public prize = 0.0000005 ether;
-
+    // implementing number randomness
+    uint256 private nonce;
 
     // mapping to track each player's points
     mapping(address => uint256) public playerPoints;
 
-    // implementing number randomness
-    uint256 private nonce;
+    
 
     event NumberGuessed(address player, uint256 guessedNumber, bool won);
     event PointsAwarded(address player, uint256 points);
-    event NumberGenerated(uint256 number)
+
 
     // constructor to set the owner of the contract
 
@@ -33,7 +34,7 @@ contract GuessGame is Ownable {
 
         uint256 randomNumber = uint256(
             keccak256(
-                abi.encodePaced(
+                abi.encodePacked(
                     block.timestamp,
                     block.prevrandao,
                     msg.sender,
@@ -50,15 +51,11 @@ contract GuessGame is Ownable {
 
         nonce++;
 
-        emit NumberGenerated(number);
+        
 
 
     }
-    function setNumber(uint256 _number) external onlyOwner {
-
-        require(_number > 0 && _number <= 10, "Number must be between 1 and 10");
-        number = _number;
-    }
+    
     function guess(uint256 _guess) external payable {
         require(msg.value == betAmount, "Incorrect bet amount");
         require(_guess > 0 && _guess <= 10, "Number must be between 1 and 10");
@@ -72,7 +69,7 @@ contract GuessGame is Ownable {
             // Award an addittional 15 points for a correct guess 
             playerPoints[msg.sender] += 15;
             // Generate a new number after correct guess
-            generateNumber();
+            
         }
 
         emit NumberGuessed(msg.sender, _guess, won);

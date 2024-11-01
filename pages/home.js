@@ -53,7 +53,7 @@ export default function Home() {
           <div className="bg-gray-800 p-8 rounded-lg mb-12">
             <h2 className="text-2xl font-bold mb-4">How to Play</h2>
             <ol className="text-left text-gray-300 space-y-2">
-              <li>1. Connect your wallet using the button below</li>
+              <li>1. Connect to your wallet using the button below</li>
               <li>2. Place a small bet in ETH</li>
               <li>3. Guess a number between 1 and 10</li>
               <li>4. Win points for correct guesses!</li>

@@ -2,7 +2,7 @@ import React from 'react';
 
 import  { X } from 'lucide-react';
 
-export default function TryAgainPopup({ isOpen, onClose, correctNumber, onTryAgain}) {
+export default function TryAgainPopup({ isOpen, onClose, onTryAgain}) {
     if (!isOpen)  return null;
 
     return (
@@ -17,7 +17,7 @@ export default function TryAgainPopup({ isOpen, onClose, correctNumber, onTryAga
                         Oops! Not quite right.
                     </h2>
                     <p className="text-lg mb-4">
-                        The correct number was <span className='font-bold text-red-500'>{correctNumber}</span> .
+                        The correct number was <span className='font-bold text-red-500'>...Loading</span> .
                         </p>
 
                         <p className="text-gray-600 mb-6">Don't worry, you still earned 5 points for trying!</p>

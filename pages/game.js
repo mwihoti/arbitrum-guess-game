@@ -6,6 +6,7 @@ import { formatEther } from 'viem'
 import { useRouter } from 'next/router'
 import GuessGameABI from '../artifacts/contracts/GuessGame.sol/GuessGame.json'
 import CelebrationModal from '../components/celebration-modal'
+import TryAgainPopup from '../components/TryAgainPopup'
 
 export default function Game() {
   const [guess, setGuess] = useState('')
@@ -14,6 +15,8 @@ export default function Game() {
   const [isLoading, setIsLoading] = useState(false)
   const [playerPoints, setPlayerPoints] = useState(null)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [showTryAgain, setShowTryAgain] = useState(false)
+  const [correctNumber, setCorrectNumber] = useState(null)
   
   const { address, isConnected, chainId } = useAccount()
   const publicClient = usePublicClient()
@@ -101,7 +104,7 @@ export default function Game() {
       })
 
       const hash = await walletClient.writeContract(request)
-      setMessage('Transaction sent! ...')
+      setMessage('Transaction sent! Waiting for confirmation...')
       
       const receipt = await publicClient.waitForTransactionReceipt({ hash })
       
@@ -115,14 +118,15 @@ export default function Game() {
 
       if (logs && logs.length > 0) {
         const event = logs[0]
-        const { won } = event.args
+        const { guessedNumber, won } = event.args
         
         await updatePlayerPoints()
 
         if (won) {
           setShowCelebration(true)
         } else {
-          setMessage('😔 Sorry, your guess was incorrect. Try again!')
+          setCorrectNumber(guessedNumber.toString())
+          setShowTryAgain(true)
         }
       } else {
         setMessage('No event found. Please check the transaction on the block explorer.')
@@ -147,6 +151,11 @@ export default function Game() {
       setIsLoading(false)
       setGuess('')
     }
+  }
+
+  const handleTryAgain = () => {
+    setShowTryAgain(false)
+    setGuess('')
   }
 
   return (
@@ -208,6 +217,11 @@ export default function Game() {
         isOpen={showCelebration}
         onClose={() => setShowCelebration(false)}
         points={playerPoints}
+      />
+      <TryAgainPopup
+        isOpen={showTryAgain}
+        onClose={() => setShowTryAgain(false)}
+        onTryAgain={handleTryAgain}
       />
     </div>
   )
