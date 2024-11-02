@@ -104,8 +104,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - [Next.js](https://nextjs.org/) for the React framework
 - [Tailwind CSS](https://tailwindcss.com/) for styling
 
-## Contact
-
-If you have any questions, feel free to reach out to [Your Name] at [danielmwihoti@gmail.com].
 
 Happy guessing! Enjoy!
